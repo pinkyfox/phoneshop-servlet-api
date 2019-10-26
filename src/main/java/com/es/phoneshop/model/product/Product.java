@@ -1,5 +1,6 @@
 package com.es.phoneshop.model.product;
 
+import javax.swing.*;
 import java.math.BigDecimal;
 import java.util.Currency;
 
@@ -15,6 +16,15 @@ public class Product {
     private String imageUrl;
 
     public Product() {
+    }
+
+    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+        this.code = code;
+        this.description = description;
+        this.price = price;
+        this.currency = currency;
+        this.stock = stock;
+        this.imageUrl = imageUrl;
     }
 
     public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
@@ -82,4 +92,5 @@ public class Product {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
+
 }
