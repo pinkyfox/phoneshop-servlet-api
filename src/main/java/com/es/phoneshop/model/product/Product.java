@@ -2,20 +2,18 @@ package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Objects;
 
 public class Product {
     private String id;
     private String description;
-    /** null means there is no price because the product is outdated or new */
     private BigDecimal price;
-    /** can be null if the price is null */
     private Currency currency;
     private int stock;
     private String imageUrl;
 
     public Product() {
     }
-
 
     public Product(String id, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
         this.id = id;
@@ -75,40 +73,16 @@ public class Product {
     }
 
     @Override
-    public int hashCode() {
-        return id.chars().sum();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return stock == product.stock &&
+                id.equals(product.id);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Product other = (Product) obj;
-        if (!id.equals(other.id)) {
-            return true;
-        }
-        if (!description.equals(other.description)) {
-            return true;
-        }
-        if (price.compareTo(other.price) != 0) {
-            return false;
-        }
-        if (!currency.equals(other.currency)) {
-            return false;
-        }
-        if (stock != other.stock) {
-            return false;
-        }
-        if (!imageUrl.equals(other.imageUrl)) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return Objects.hash(id, stock);
     }
 }

@@ -11,7 +11,9 @@ import java.io.IOException;
 public class ProductListPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("products", new ArrayListProductDao());
+        ArrayListProductDao productDao = new ArrayListProductDao();
+        productDao.sampleInit();
+        request.setAttribute("products", productDao.findProducts());
         request.getRequestDispatcher("/WEB-INF/pages/productList.jsp").forward(request, response);
     }
 }
