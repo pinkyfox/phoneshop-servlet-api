@@ -34,6 +34,7 @@ public class ProductListPageServletTest {
 
     @Test
     public void testDoGet() throws ServletException, IOException {
+        servlet.init();
         servlet.doGet(request, response);
         verify(requestDispatcher).forward(request, response);
     }
