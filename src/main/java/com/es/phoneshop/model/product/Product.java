@@ -1,12 +1,10 @@
 package com.es.phoneshop.model.product;
 
-import javax.swing.*;
 import java.math.BigDecimal;
 import java.util.Currency;
 
 public class Product {
-    private Long id;
-    private String code;
+    private String id;
     private String description;
     /** null means there is no price because the product is outdated or new */
     private BigDecimal price;
@@ -18,18 +16,9 @@ public class Product {
     public Product() {
     }
 
-    public Product(String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
-        this.code = code;
-        this.description = description;
-        this.price = price;
-        this.currency = currency;
-        this.stock = stock;
-        this.imageUrl = imageUrl;
-    }
 
-    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+    public Product(String id, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
         this.id = id;
-        this.code = code;
         this.description = description;
         this.price = price;
         this.currency = currency;
@@ -37,20 +26,12 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public String getDescription() {
@@ -93,4 +74,41 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
+    @Override
+    public int hashCode() {
+        return id.chars().sum();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Product other = (Product) obj;
+        if (!id.equals(other.id)) {
+            return true;
+        }
+        if (!description.equals(other.description)) {
+            return true;
+        }
+        if (price.compareTo(other.price) != 0) {
+            return false;
+        }
+        if (!currency.equals(other.currency)) {
+            return false;
+        }
+        if (stock != other.stock) {
+            return false;
+        }
+        if (!imageUrl.equals(other.imageUrl)) {
+            return false;
+        }
+        return true;
+    }
 }
