@@ -18,7 +18,6 @@ public class ArrayListProductDaoTest {
     @Before
     public void init() {
         productDao = new ArrayListProductDao();
-        ((ArrayListProductDao)productDao).sampleInit();
     }
 
     @Test

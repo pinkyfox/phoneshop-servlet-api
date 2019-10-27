@@ -14,7 +14,8 @@ public class ArrayListProductDao implements ProductDao {
 
     public ArrayListProductDao() {
         arrayListProduct = new ArrayList<>();
-       }
+        sampleInit();
+    }
 
     @Override
     public synchronized Optional<Product> getProduct(String id) {
@@ -34,12 +35,12 @@ public class ArrayListProductDao implements ProductDao {
     public synchronized void save(Product product) {
         if (product.getId().isEmpty()) {
             product.setId(UUID.randomUUID().toString());
+        } else if (isExist(product)) {
+            arrayListProduct.set(getIndexOf(product), product);
         }
-        else if (arrayListProduct.stream().anyMatch(currentProduct -> product.getId().equals(currentProduct.getId()))) {
-            arrayListProduct.set(arrayListProduct.indexOf(getProduct(product.getId()).get()), product);
-            return;
+        if (!isExist(product)) {
+            arrayListProduct.add(product);
         }
-        arrayListProduct.add(product);
     }
 
     @Override
@@ -47,7 +48,7 @@ public class ArrayListProductDao implements ProductDao {
         arrayListProduct.removeIf(product -> id.equals(product.getId()));
     }
 
-    public void sampleInit(){
+    private void sampleInit() {
         Currency usd = Currency.getInstance("USD");
         arrayListProduct.add(new Product("1L", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         arrayListProduct.add(new Product("2L",  "Samsung Galaxy S II", new BigDecimal(200), usd, 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
@@ -62,5 +63,14 @@ public class ArrayListProductDao implements ProductDao {
         arrayListProduct.add(new Product("11L", "Siemens C56", new BigDecimal(70), usd, 20, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C56.jpg"));
         arrayListProduct.add(new Product("12L", "Siemens C61", new BigDecimal(80), usd, 30, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20C61.jpg"));
         arrayListProduct.add(new Product("13L", "Siemens SXG75", new BigDecimal(150), usd, 40, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Siemens/Siemens%20SXG75.jpg"));
+    }
+
+    private boolean isExist(Product product) {
+        return arrayListProduct.stream()
+                .anyMatch(currentProduct -> product.getId().equals(currentProduct.getId()));
+    }
+
+    private int getIndexOf(Product product) {
+        return arrayListProduct.indexOf(getProduct(product.getId()).get());
     }
 }
