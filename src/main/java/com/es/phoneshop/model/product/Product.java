@@ -2,14 +2,12 @@ package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Objects;
 
 public class Product {
-    private Long id;
-    private String code;
+    private String id;
     private String description;
-    /** null means there is no price because the product is outdated or new */
     private BigDecimal price;
-    /** can be null if the price is null */
     private Currency currency;
     private int stock;
     private String imageUrl;
@@ -17,9 +15,8 @@ public class Product {
     public Product() {
     }
 
-    public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+    public Product(String id, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
         this.id = id;
-        this.code = code;
         this.description = description;
         this.price = price;
         this.currency = currency;
@@ -27,20 +24,12 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
     }
 
     public String getDescription() {
@@ -81,5 +70,19 @@ public class Product {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product product = (Product) o;
+        return stock == product.stock &&
+                id.equals(product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, stock);
     }
 }
