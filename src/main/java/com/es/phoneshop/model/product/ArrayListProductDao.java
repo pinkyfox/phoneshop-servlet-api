@@ -18,21 +18,21 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized Optional<Product> getProduct(String id) {
+    public Optional<Product> getProduct(String id) {
         return arrayListProduct.stream()
                 .filter(product -> product.getId().equals(id))
                 .findFirst();
     }
 
     @Override
-    public synchronized List<Product> findProducts() {
+    public List<Product> findProducts() {
         return arrayListProduct.stream()
                 .filter(product -> product.getStock() > 0 && product.getPrice() != null)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public synchronized void save(Product product) {
+    public void save(Product product) {
         if (product.getId().isEmpty()) {
             product.setId(UUID.randomUUID().toString());
         } else if (isExist(product)) {
@@ -44,7 +44,7 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public synchronized void delete(String id) {
+    public void delete(String id) {
         arrayListProduct.removeIf(product -> id.equals(product.getId()));
     }
 
