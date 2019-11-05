@@ -1,0 +1,13 @@
+.searchBox {
+    text-align:justify;
+}
+
+.searchBox:after {
+    display:inline-block;
+    width: 100%;
+    height: 0
+}
+
+.searchBox > span {
+    display:inline-block
+}

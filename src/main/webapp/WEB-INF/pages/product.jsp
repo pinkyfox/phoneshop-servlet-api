@@ -5,21 +5,19 @@
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
 <tags:master pageTitle="Product details">
-  <p>
-    ${product.description}
-  </p>
+  <p>${product.description}</p>
   <table>
-        <tr>
+     <tr>
         <td>Image</td>
         <td>
-            <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
+           <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
         </td>
-        </tr>
-        <tr>
-            <td>${product.description}</td>
-            <td class="price">
-                <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
-            </td>
-        </tr>
+     </tr>
+     <tr>
+        <td>${product.description}</td>
+        <td class="price">
+           <fmt:formatNumber value="${product.price}" type="currency" currencySymbol="${product.currency.symbol}"/>
+        </td>
+     </tr>
   </table>
 </tags:master>
