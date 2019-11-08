@@ -7,6 +7,8 @@ $("#textBox").keyup(function(event) {
 $(document).on("click", "#myButton", function() {
     $.get("/phoneshop-servlet-api/products?" + $("#MyForm").serialize(), function(responseText) {
         $("body").html(responseText);
+        var stateObj = { products : "products" }
+        window.history.pushState(stateObj, "", "products?" + $("#MyForm").serialize());
     });
 });
 
@@ -15,6 +17,8 @@ $(function() {
          $.get("/phoneshop-servlet-api/products?sort=price&order=asc&" + $("#MyForm").serialize(), function(responseText) {
               $("body").html(responseText);
          });
+         var stateObj = { products : "products" }
+         window.history.pushState(stateObj, "", "products?sort=price&order=asc&" + $("#MyForm").serialize());
          return false;
     });
 });
@@ -24,6 +28,8 @@ $(function() {
          $.get("/phoneshop-servlet-api/products?sort=price&order=desc&" + $("#MyForm").serialize(), function(responseText) {
               $("body").html(responseText);
          });
+         var stateObj = { products : "products" }
+         window.history.pushState(stateObj, "", "products?sort=price&order=desc&" + $("#MyForm").serialize());
          return false;
     });
 });
@@ -33,6 +39,8 @@ $(function() {
          $.get("/phoneshop-servlet-api/products?sort=description&order=asc&" + $("#MyForm").serialize(), function(responseText) {
               $("body").html(responseText);
          });
+         var stateObj = { products : "products" }
+         window.history.pushState(stateObj, "", "products?sort=description&order=asc&" + $("#MyForm").serialize());
          return false;
     });
 });
@@ -42,6 +50,8 @@ $(function() {
          $.get("/phoneshop-servlet-api/products?sort=description&order=desc&" + $("#MyForm").serialize(), function(responseText) {
               $("body").html(responseText);
          });
+         var stateObj = { products : "products" }
+         window.history.pushState(stateObj, "", "products?sort=description&order=desc&" + $("#MyForm").serialize());
          return false;
     });
 });
