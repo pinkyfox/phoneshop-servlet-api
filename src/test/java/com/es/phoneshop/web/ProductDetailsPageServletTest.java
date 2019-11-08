@@ -13,14 +13,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class ProductDetailsPageServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -29,27 +27,22 @@ public class ProductListPageServletTest {
     private ProductService productService;
     @Mock
     private RequestDispatcher requestDispatcher;
-    private String queryParam = "query";
-    private String sortParam = "sort";
-    private String orderParam = "order";
-    private List<Product> result = Collections.singletonList(new Product());
-
-    private ProductListPageServlet servlet = new ProductListPageServlet();
+    private String uri = "sample";
+    private Product product = new Product();
+    private ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
 
     @Before
     public void setup() {
         servlet.setProductService(productService);
-        when(request.getParameter("query")).thenReturn(queryParam);
-        when(request.getParameter("sort")).thenReturn(sortParam);
-        when(request.getParameter("order")).thenReturn(orderParam);
+        when(request.getRequestURI()).thenReturn(uri);
     }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
-        when(productService.processQueryString(queryParam, sortParam, orderParam)).thenReturn(result);
-        when(request.getRequestDispatcher("/WEB-INF/pages/productList.jsp")).thenReturn(requestDispatcher);
+        when(productService.getProduct(uri)).thenReturn(product);
+        when(request.getRequestDispatcher("/WEB-INF/pages/product.jsp")).thenReturn(requestDispatcher);
         servlet.doGet(request, response);
-        verify(request).setAttribute("products", result);
+        verify(request).setAttribute("product", product);
         verify(requestDispatcher).forward(request, response);
     }
 }

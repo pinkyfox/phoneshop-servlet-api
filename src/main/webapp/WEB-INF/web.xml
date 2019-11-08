@@ -26,6 +26,6 @@
   </servlet-mapping>
 
   <listener>
-    <listener-class>com.es.phoneshop.Listeners.ProductSampleDataListener</listener-class>
+    <listener-class>com.es.phoneshop.Listeners.ProductSampleDataServletContextListener</listener-class>
   </listener>
 </web-app>

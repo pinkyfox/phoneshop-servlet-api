@@ -22,4 +22,8 @@ public class ProductDetailsPageServlet extends HttpServlet {
             .substring(request.getRequestURI().lastIndexOf("/") + 1)));
         request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
     }
+
+    public void setProductService(ProductService productService) {
+        this.productService = productService;
+    }
 }

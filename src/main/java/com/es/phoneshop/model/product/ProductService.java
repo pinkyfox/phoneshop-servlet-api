@@ -7,21 +7,16 @@ import java.util.stream.Collectors;
 
 public class ProductService {
     private static ProductDao productDao = ArrayListProductDao.getInstance();
-    private static volatile ProductService instance;
+    private static ProductService instance;
 
     private ProductService() {
     }
 
     public static ProductService getInstance() {
-        ProductService localInstance = instance;
-        if (localInstance == null) {
-            synchronized (ProductService.class) {
-                if (localInstance == null) {
-                    instance = localInstance = new ProductService();
-                }
-            }
+        if (instance == null) {
+            instance =  new ProductService();
         }
-        return localInstance;
+        return instance;
     }
 
     public List<Product> getAllProducts() {
@@ -79,5 +74,28 @@ public class ProductService {
             isContains = sourceStr.toLowerCase().contains(lexema.toLowerCase()) || isContains;
         }
         return isContains;
+    }
+
+    public List<Product> processQueryString(String query, String sort, String order) {
+        List<Product> result;
+        if (query == null) {
+            result = getAllProducts();
+        } else if (query != null && sort == null) {
+            result = findProducts(query);
+        } else {
+            boolean isAscOrder = order.equals("asc");
+            result = sort.equals("price") ?
+                    findProducts(query, getAllProductsSortedByPrice(isAscOrder)) :
+                    findProducts(query, getAllProductsSortedByDescription(isAscOrder));
+        }
+        return result;
+    }
+
+    public static List<Product> getProductDaoList() {
+        return ArrayListProductDao.getArrayListProduct();
+    }
+
+    public static void setProductDao(ProductDao productDao) {
+        ProductService.productDao = productDao;
     }
 }

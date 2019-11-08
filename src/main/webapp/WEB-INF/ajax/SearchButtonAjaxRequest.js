@@ -6,8 +6,6 @@ $("#textBox").keyup(function(event) {
 
 $(document).on("click", "#myButton", function() {
     $.get("/phoneshop-servlet-api/products?" + $("#MyForm").serialize(), function(responseText) {
-        $("#somediv1").text(responseText);
-        $('#somediv').empty();
         $("body").html(responseText);
     });
 });
@@ -15,8 +13,6 @@ $(document).on("click", "#myButton", function() {
 $(function() {
     $('a#pasc').click( function() {
          $.get("/phoneshop-servlet-api/products?sort=price&order=asc&" + $("#MyForm").serialize(), function(responseText) {
-              $("#somediv1").text(responseText);
-              $('#somediv').empty();
               $("body").html(responseText);
          });
          return false;
@@ -26,8 +22,6 @@ $(function() {
 $(function() {
     $('a#pdesc').click( function() {
          $.get("/phoneshop-servlet-api/products?sort=price&order=desc&" + $("#MyForm").serialize(), function(responseText) {
-              $("#somediv1").text(responseText);
-              $('#somediv').empty();
               $("body").html(responseText);
          });
          return false;
@@ -37,8 +31,6 @@ $(function() {
 $(function() {
     $('a#dasc').click( function() {
          $.get("/phoneshop-servlet-api/products?sort=description&order=asc&" + $("#MyForm").serialize(), function(responseText) {
-              $("#somediv1").text(responseText);
-              $('#somediv').empty();
               $("body").html(responseText);
          });
          return false;
@@ -48,8 +40,6 @@ $(function() {
 $(function() {
     $('a#ddesc').click( function() {
          $.get("/phoneshop-servlet-api/products?sort=description&order=desc&" + $("#MyForm").serialize(), function(responseText) {
-              $("#somediv1").text(responseText);
-              $('#somediv').empty();
               $("body").html(responseText);
          });
          return false;
