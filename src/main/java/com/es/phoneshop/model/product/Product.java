@@ -3,10 +3,9 @@ package com.es.phoneshop.model.product;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class Product {
-    private AtomicReference<String> id;
+    private String id;
     private String description;
     private BigDecimal price;
     private Currency currency;
@@ -25,7 +24,7 @@ public class Product {
     }
 
     public Product(String id, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
-        this.id = new AtomicReference<>(id);
+        this.id = id;
         this.description = description;
         this.price = price;
         this.currency = currency;
@@ -34,11 +33,11 @@ public class Product {
     }
 
     public String getId() {
-        return id != null ? id.get() : null;
+        return id;
     }
 
     public void setId(String id) {
-        this.id = new AtomicReference<>(id);
+        this.id = id;
     }
 
     public String getDescription() {
@@ -87,11 +86,11 @@ public class Product {
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
         return stock == product.stock &&
-                id.get().equals(product.id.get());
+                id.equals(product.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id.get(), stock);
+        return Objects.hash(id, stock);
     }
 }

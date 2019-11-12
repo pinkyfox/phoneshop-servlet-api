@@ -1,71 +1,95 @@
 package com.es.phoneshop.model.productService;
 
+import com.es.phoneshop.exceptions.ProductNotFoundException;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductService;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Currency;
+import java.util.Collections;
+import java.util.Optional;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ProductServiceTest {
+    @Mock
+    private ArrayListProductDao productDao;
+
     private ProductService productService;
+
+    private String query = "1L";
+    private Product product = new Product();
+    private Optional<Product> optionalProduct = Optional.of(product);
+    private List<Product> products = Collections.singletonList(new Product());
 
     @Before
     public void setup() {
         productService = ProductService.getInstance();
-        ArrayListProductDao productDao = ArrayListProductDao.getInstance();
-        List<Product> productList = new ArrayList<>();
-        productList.add(new Product("1L", "A", new BigDecimal(100), Currency.getInstance("USD"), 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg" ));
-        productList.add(new Product("2L",  "C", new BigDecimal(200), Currency.getInstance("USD"), 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
-        productList.add(new Product("3L",  "B", new BigDecimal(50), Currency.getInstance("USD"), 10, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
-        ArrayListProductDao.setArrayListProduct(productList);
         ProductService.setProductDao(productDao);
+
+        when(productDao.findProducts()).thenReturn(products);
+        when(productDao.findProducts(query)).thenReturn(products);
+        when(productDao.findProductsByDescriptionAndSortedByPrice(query, true)).thenReturn(products);
+        when(productDao.findProductsByDescriptionAndSortedByPrice(query, false)).thenReturn(products);
+        when(productDao.findProductsByDescriptionAndSortedByDescription(query, true)).thenReturn(products);
+        when(productDao.findProductsByDescriptionAndSortedByDescription(query, false)).thenReturn(products);
+        when(productDao.getProduct(query)).thenReturn(optionalProduct);
     }
 
     @Test
-    public void sortedListByDescriptionWhenSortByDescription() {
-        List<Product> result = productService.getAllProductsSortedByDescription(true);
-        assertEquals("1L", result.get(0).getId());
-        assertEquals("2L", result.get(2).getId());
-        assertEquals("3L",  result.get(1).getId());
-        result.clear();
-        result = productService.getAllProductsSortedByDescription(false);
-        assertEquals("1L", result.get(2).getId());
-        assertEquals("2L", result.get(0).getId());
-        assertEquals("3L",  result.get(1).getId());
+    public void getProductWhenGetProduct() throws ProductNotFoundException {
+        assertEquals(product, productService.getProduct(query));
+    }
+
+    @Test(expected = ProductNotFoundException.class)
+    public void getErrorWhenGetNoneExistingProduct() throws ProductNotFoundException {
+        productService.getProduct(null);
     }
 
     @Test
-    public void sortedListByPriceWhenSortByPrice() {
-        List<Product> result = productService.getAllProductsSortedByPrice(true);
-        assertEquals("1L", result.get(1).getId());
-        assertEquals("2L", result.get(2).getId());
-        assertEquals("3L",  result.get(0).getId());
-        result.clear();
-        result = productService.getAllProductsSortedByPrice(false);
-        assertEquals("1L", result.get(1).getId());
-        assertEquals("2L", result.get(0).getId());
-        assertEquals("3L",  result.get(2).getId());
+    public void getAllProductsWithNonNullPriceAndUpToZeroStockWhenFindProductsWithNullQueryString() {
+        assertEquals(products, productService.getAllProducts(null));
     }
 
     @Test
-    public void listOfProductsWhenFindProducts() {
-        List<Product> result = productService.findProducts("c");
-        assertEquals(1, result.size());
-        assertEquals("2L", result.get(0).getId());
+    public void getAllProductsWithNonNullPriceAndUpToZeroStockWhenFindProductsWithNonNullQueryString() {
+        assertEquals(products, productService.getAllProducts(query));
     }
 
     @Test
-    public void sortedListOfProductsWhenFindProducts() {
-        List<Product> result = productService.findProducts( "a and b", productService.getAllProductsSortedByPrice(true));
-        assertEquals(2, result.size());
-        assertEquals("3L", result.get(0).getId());
-        assertEquals("1L", result.get(1).getId());
+    public void getAllProductsWithNonNullPriceAndUpToZeroStockWhenProcessQueryString() {
+        assertEquals(products, productService.processQueryString(null, null, null));
+    }
+
+    @Test
+    public void getProductsByDescriptionWhenProcessQueryString() {
+        assertEquals(products, productService.processQueryString(query, null, null));
+    }
+
+    @Test
+    public void getProductsByDescriptionAndSortedByPriceInAscOrderWhenProcessQueryString() {
+        assertEquals(products, productService.processQueryString(query, "price", "asc"));
+    }
+
+    @Test
+    public void getProductsByDescriptionAndSortedByPriceInDescOrderWhenProcessQueryString() {
+        assertEquals(products, productService.processQueryString(query, "price", "desc"));
+    }
+
+    @Test
+    public void getProductsByDescriptionAndSortedByDescriptionInAscOrderWhenProcessQueryString() {
+        assertEquals(products, productService.processQueryString(query, "description", "asc"));
+    }
+
+    @Test
+    public void getProductsByDescriptionAndSortedByDescriptionInDescOrderWhenProcessQueryString() {
+        assertEquals(products, productService.processQueryString(query, "description", "desc"));
     }
 }

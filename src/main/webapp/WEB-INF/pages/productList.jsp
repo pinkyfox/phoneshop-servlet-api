@@ -14,7 +14,7 @@
         </form>
      </span>
      <span>
-        <input type="button" value="search" id="myButton"/>
+        <input type="button" value="Search" id="myButton"/>
      <span>
   </div>
   <table id = "productTable">

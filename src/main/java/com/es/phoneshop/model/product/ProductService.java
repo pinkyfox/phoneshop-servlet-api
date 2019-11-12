@@ -1,12 +1,11 @@
 package com.es.phoneshop.model.product;
 
-import java.util.Collections;
-import java.util.Comparator;
+import com.es.phoneshop.exceptions.ProductNotFoundException;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ProductService {
-    private static ProductDao productDao = ArrayListProductDao.getInstance();
+    private static ProductDao productDao;
     private static ProductService instance;
 
     private ProductService() {
@@ -15,87 +14,45 @@ public class ProductService {
     public static ProductService getInstance() {
         if (instance == null) {
             instance =  new ProductService();
+            productDao = ArrayListProductDao.getInstance();
         }
         return instance;
     }
 
-    public List<Product> getAllProducts() {
-        return productDao.findProducts();
+    public Product getProduct(String id) throws ProductNotFoundException {
+        return productDao.getProduct(id).orElseThrow(ProductNotFoundException::new);
     }
 
-    public List<Product> getAllProductsSortedByPrice(boolean ascendingOrder) {
-        List<Product> result = productDao.findProducts().stream()
-                .sorted(Comparator.comparing(product -> product.getPrice()))
-                .collect(Collectors.toList());
-        if (!ascendingOrder) {
-            Collections.reverse(result);
-        }
-        return result;
-    }
-
-    public List<Product> getAllProductsSortedByDescription(boolean ascendingOrder) {
-        List<Product> result = productDao.findProducts().stream()
-                .sorted(Comparator.comparing(product -> product.getDescription()))
-                .collect(Collectors.toList());
-        if (!ascendingOrder) {
-            Collections.reverse(result);
-        }
-        return result;
-    }
-
-    public List<Product> findProducts(String query) {
-        return productDao.findProducts().stream()
-                .filter(product -> strContains(product.getDescription(), query))
-                .collect(Collectors.toList());
-    }
-
-    public List<Product> findProducts(String query, List<Product> list) {
-        return list.stream()
-                .filter(product -> strContains(product.getDescription(), query))
-                .collect(Collectors.toList());
-    }
-
-    public Product getProduct(String id) {
-        return productDao.getProduct(id).get();
-    }
-
-    public void save(Product product) {
-        productDao.save(product);
-    }
-
-    public void remove(String id) {
-        productDao.delete(id);
-    }
-
-    private boolean strContains (String sourceStr, String comparableStr) {
-        boolean isContains = false;
-        String[] lexems = comparableStr.split("\\s+");
-        for (String lexema: lexems) {
-            isContains = sourceStr.toLowerCase().contains(lexema.toLowerCase()) || isContains;
-        }
-        return isContains;
+    public List<Product> getAllProducts(String description) {
+        return description == null ?
+                productDao.findProducts() :
+                productDao.findProducts(description);
     }
 
     public List<Product> processQueryString(String query, String sort, String order) {
         List<Product> result;
         if (query == null) {
-            result = getAllProducts();
-        } else if (query != null && sort == null) {
-            result = findProducts(query);
+            result = getAllProducts(null);
+        } else if (sort == null) {
+            result = getAllProducts(query);
         } else {
             boolean isAscOrder = order.equals("asc");
             result = sort.equals("price") ?
-                    findProducts(query, getAllProductsSortedByPrice(isAscOrder)) :
-                    findProducts(query, getAllProductsSortedByDescription(isAscOrder));
+                    getProductsByDescriptionAndSortedByPrice(query ,isAscOrder) :
+                    getProductsByDescriptionAndSortedByDescription(query, isAscOrder);
         }
         return result;
     }
 
-    public static List<Product> getProductDaoList() {
-        return ArrayListProductDao.getArrayListProduct();
-    }
-
     public static void setProductDao(ProductDao productDao) {
         ProductService.productDao = productDao;
+    }
+
+    private List<Product> getProductsByDescriptionAndSortedByDescription(String query, boolean isAscOrder) {
+        return productDao.findProductsByDescriptionAndSortedByDescription(query, isAscOrder);
+    }
+
+    private List<Product> getProductsByDescriptionAndSortedByPrice(String query, boolean isAscOrder) {
+        return productDao.findProductsByDescriptionAndSortedByPrice(query, isAscOrder);
     }
 }

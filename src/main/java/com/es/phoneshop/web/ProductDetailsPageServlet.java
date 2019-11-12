@@ -1,5 +1,6 @@
 package com.es.phoneshop.web;
 
+import com.es.phoneshop.exceptions.ProductNotFoundException;
 import com.es.phoneshop.model.product.ProductService;
 
 import javax.servlet.ServletException;
@@ -18,12 +19,19 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("product", productService.getProduct(request.getRequestURI()
-            .substring(request.getRequestURI().lastIndexOf("/") + 1)));
-        request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+        try {
+            request.setAttribute("product", productService.getProduct(getId(request)));
+            request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
+        } catch (ProductNotFoundException e) {
+            request.getRequestDispatcher("/WEB-INF/pages/productNotFound.jsp").forward(request, response);
+        }
     }
 
-    public void setProductService(ProductService productService) {
+    private String getId(HttpServletRequest request) {
+        return request.getRequestURI().substring(request.getRequestURI().lastIndexOf("/") + 1);
+    }
+
+    void setProductService(ProductService productService) {
         this.productService = productService;
     }
 }
