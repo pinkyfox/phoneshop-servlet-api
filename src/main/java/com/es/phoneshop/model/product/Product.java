@@ -15,6 +15,14 @@ public class Product {
     public Product() {
     }
 
+    public Product(String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
+        this.description = description;
+        this.price = price;
+        this.currency = currency;
+        this.stock = stock;
+        this.imageUrl = imageUrl;
+    }
+
     public Product(String id, String description, BigDecimal price, Currency currency, int stock, String imageUrl) {
         this.id = id;
         this.description = description;

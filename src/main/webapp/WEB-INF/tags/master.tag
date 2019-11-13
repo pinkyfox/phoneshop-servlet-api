@@ -6,16 +6,18 @@
   <title>${pageTitle}</title>
   <link href='http://fonts.googleapis.com/css?family=Lobster+Two' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="${pageContext.servletContext.contextPath}/styles/main.css">
+  <link rel="stylesheet" href="${pageContext.servletContext.contextPath}/styles/priceHistoryWindow.css">
+  <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 </head>
-<body class="product-list">
+ <body class="product-list">
   <header>
-    <a href="${pageContext.servletContext.contextPath}">
+      <a href="${pageContext.servletContext.contextPath}">
       <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
       PhoneShop
     </a>
   </header>
   <main>
-    <jsp:doBody/>
+ <jsp:doBody/>
   </main>
 </body>
 </html>
