@@ -1,6 +1,5 @@
 package com.es.phoneshop.cart;
 
-import com.es.phoneshop.exceptions.NotEnoughStockException;
 import com.es.phoneshop.model.product.Product;
 
 import java.util.List;
@@ -17,11 +16,10 @@ public class Cart {
     public void add(Product product, int quantity) {
         CartItem newCartItem = new CartItem(product, quantity);
         if (isExist(newCartItem)) {
-            resetCartItemParameters(newCartItem, quantity);
+            rewriteCartItemParameters(newCartItem, quantity);
         } else {
             cartItemList.add(newCartItem);
         }
-        product.setStock(product.getStock() - quantity);
     }
 
     public void delete(CartItem cartItem) {
@@ -35,7 +33,7 @@ public class Cart {
         return isExist.isPresent();
     }
 
-    private void resetCartItemParameters(CartItem cartItem, int quantity) {
+    private void rewriteCartItemParameters(CartItem cartItem, int quantity) {
         if (quantity != 0) {
             CartItem previousValue = cartItemList.get(cartItemList.indexOf(cartItem));
             previousValue.setQuantity(previousValue.getQuantity() + quantity);

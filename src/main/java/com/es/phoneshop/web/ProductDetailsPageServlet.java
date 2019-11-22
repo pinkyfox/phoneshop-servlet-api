@@ -2,29 +2,28 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartService;
-import com.es.phoneshop.exceptions.CannotParseToIntException;
 import com.es.phoneshop.exceptions.NotEnoughStockException;
 import com.es.phoneshop.exceptions.ProductNotFoundException;
-import com.es.phoneshop.exceptions.ValueBelowOrEqualsZeroException;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductService;
-import com.es.phoneshop.recentlyViewed.RecentlyViewed;
 import com.es.phoneshop.recentlyViewed.RecentlyViewedService;
+import com.es.phoneshop.validator.Validator;
+import com.es.phoneshop.validator.implementation.ProductQuantityValidator;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ProductDetailsPageServlet extends HttpServlet {
     private ProductService productService;
     private CartService cartService;
     private RecentlyViewedService recentlyViewedService;
 
-    private static final String NOT_ENOUGH_STOCK = "Not enough stock. Available stock : ";
-    private static final String VALUE_BELOW_OR_EQUALS_ZERO = "Invalid input. You're entered invalid quantity : ";
-    private static final String CANNOT_PARSE_TO_INT = "Invalid input. Not a number : ";
 
     @Override
     public void init() {
@@ -47,26 +46,28 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String errorMessage = null;
-        Product product = null;
-        Cart cart = null;
+        Map<String, List<String>> errorMap = new HashMap<>();
 
-        try {
-            product = productService.getProduct(getId(request));
-            cart = cartService.processRequest(request, product);
-            request.getSession().setAttribute("cart", cart);
-        } catch (ProductNotFoundException e) {
-            request.getRequestDispatcher("/WEB-INF/pages/productNotFound.jsp").forward(request, response);
-        } catch (NotEnoughStockException e) {
-            errorMessage = NOT_ENOUGH_STOCK + product.getStock();
-        } catch (ValueBelowOrEqualsZeroException e) {
-            errorMessage = VALUE_BELOW_OR_EQUALS_ZERO + request.getParameter("quantity");
-        } catch (CannotParseToIntException e) {
-            errorMessage = CANNOT_PARSE_TO_INT + request.getParameter("quantity");
+        Validator<String, String> validator = new ProductQuantityValidator();
+        validator.validate(request, errorMap);
+
+        Cart cart = null;
+        Product product = null;
+
+        if (errorMap.isEmpty()) {
+            try {
+                product = productService.getProduct(getId(request));
+                cart = cartService.processRequest(request.getSession(), product, Integer.valueOf(request.getParameter("quantity")));
+                request.getSession().setAttribute("cart", cart);
+            } catch (ProductNotFoundException e) {
+                request.getRequestDispatcher("/WEB-INF/pages/productNotFound.jsp").forward(request, response);
+            } catch (NotEnoughStockException e) {
+                validator.addErrorMessage(errorMap, "Out of stock. Available : " + product.getStock());
+            }
         }
 
-        if (errorMessage != null) {
-            request.setAttribute("error", errorMessage);
+        if (!errorMap.isEmpty()){
+            request.setAttribute("error", errorMap.get("quantity").get(0));
             request.setAttribute("cart", cart);
             doGet(request, response);
             return;
@@ -75,11 +76,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         response.sendRedirect(request.getRequestURI() + "?success=true");
     }
 
-    private String getId(HttpServletRequest request) {
-        return request.getRequestURI().substring(request.getRequestURI().lastIndexOf("/") + 1);
-    }
-
-    void setProductService(ProductService productService) {
+    public void setProductService(ProductService productService) {
         this.productService = productService;
     }
 
@@ -89,5 +86,9 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     public void setRecentlyViewedService(RecentlyViewedService recentlyViewedService) {
         this.recentlyViewedService = recentlyViewedService;
+    }
+
+    private String getId(HttpServletRequest request) {
+        return request.getRequestURI().substring(request.getRequestURI().lastIndexOf("/") + 1);
     }
 }

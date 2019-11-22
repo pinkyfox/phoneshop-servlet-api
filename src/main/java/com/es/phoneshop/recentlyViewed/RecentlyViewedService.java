@@ -4,12 +4,10 @@ import com.es.phoneshop.model.product.Product;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
 
 public class RecentlyViewedService {
-    private RecentlyViewed recentlyViewed = null;
     private static RecentlyViewedService recentlyViewedService = null;
+    private static final int MAX_SIZE_OF_RECENTLY_VIEWED_ITEMS = 3;
 
     private RecentlyViewedService() {
     }
@@ -21,19 +19,22 @@ public class RecentlyViewedService {
         return recentlyViewedService;
     }
 
-    private void add(Product product) {
-       recentlyViewed.add(product);
+    private void add(RecentlyViewed recentlyViewed, Product product) {
+        if (recentlyViewed.contains(product)) {
+            recentlyViewed.remove(product);
+        }  else if (recentlyViewed.size() == MAX_SIZE_OF_RECENTLY_VIEWED_ITEMS) {
+            recentlyViewed.remove(MAX_SIZE_OF_RECENTLY_VIEWED_ITEMS - 1);
+        }
+        recentlyViewed.add(product);
     }
 
-    public List<Product> processRequest(HttpServletRequest request, Product product) {
+    public RecentlyViewed processRequest(HttpServletRequest request, Product product) {
         HttpSession session = request.getSession();
-        List<Product> recentlyViewedList = (List<Product>) session.getAttribute("recentlyViewed");
-        if (recentlyViewedList == null) {
-            recentlyViewedList = new ArrayList<>();
+        RecentlyViewed recentlyViewed = (RecentlyViewed) session.getAttribute("recentlyViewed");
+        if (recentlyViewed == null) {
             recentlyViewed = new RecentlyViewed();
         }
-        recentlyViewed.setRecentlyViewedList(recentlyViewedList);
-        add(product);
-        return recentlyViewed.getRecentlyViewedList();
+        add(recentlyViewed, product);
+        return recentlyViewed;
     }
 }

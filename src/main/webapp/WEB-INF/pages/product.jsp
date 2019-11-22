@@ -36,7 +36,7 @@
                </p>
                <p>
                   <label>Qty: </label>
-                  <input name="quantity"/>
+                  <input name="quantity" value="${param.quantity}"/>
                   <button>Add to cart</button>
                </p>
            </form>

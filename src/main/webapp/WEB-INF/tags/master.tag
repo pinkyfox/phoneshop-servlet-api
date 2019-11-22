@@ -15,7 +15,7 @@
   <header>
       <a href="${pageContext.servletContext.contextPath}">
       <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
-      PhoneShop: ${cart.cartItemList}
+      PhoneShop: ${sessionScope.get("cart")}
     </a>
   </header>
   <main>
@@ -28,7 +28,7 @@
           </p>
           <table>
               <tr>
-                  <c:forEach items="${recentlyViewed}" var="product">
+                  <c:forEach items="${recentlyViewed.recentlyViewedList}" var="product">
                       <td align="center">
                           <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
                           <p>

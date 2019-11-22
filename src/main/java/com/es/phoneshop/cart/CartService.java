@@ -1,17 +1,12 @@
 package com.es.phoneshop.cart;
 
-import com.es.phoneshop.exceptions.CannotParseToIntException;
 import com.es.phoneshop.exceptions.NotEnoughStockException;
-import com.es.phoneshop.exceptions.ValueBelowOrEqualsZeroException;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.validator.Validator;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 public class CartService {
-    private static CartService cartService = null;
-    private Cart cart = null;
+    private static CartService cartService;
 
     private CartService() {
     }
@@ -23,35 +18,20 @@ public class CartService {
         return cartService;
     }
 
-    private void addToCart(Product product, int quantity) throws NotEnoughStockException{
-        int availableStock = product.getStock();
-        if (availableStock - quantity >= 0) {
+    public Cart processRequest(HttpSession session, Product product, int quantity) throws NotEnoughStockException {
+        Cart cart = (Cart) session.getAttribute("cart");
+        if (cart == null) {
+            cart = new Cart();
+        }
+        addToCart(cart, product, quantity);
+        return cart;
+    }
+
+    private void addToCart(Cart cart, Product product, int quantity) throws NotEnoughStockException {
+        if (product.getStock() >= quantity) {
             cart.add(product, quantity);
         } else {
             throw new NotEnoughStockException();
         }
-    }
-
-    public Cart processRequest(HttpServletRequest request, Product product) throws CannotParseToIntException, NotEnoughStockException, ValueBelowOrEqualsZeroException {
-        HttpSession session = request.getSession();
-        String quantity = request.getParameter("quantity");
-        setCart((Cart) session.getAttribute("cart"));
-        if (cart == null) {
-            cart = new Cart();
-        }
-        addToCart(product, Validator.parseToInteger(quantity));
-        return cart;
-    }
-
-    private void remove(CartItem cartItem) {
-        cart.delete(cartItem);
-    }
-
-    private void setCart(Cart cart) {
-        this.cart = cart;
-    }
-
-    private Cart getCart() {
-        return cart;
     }
 }

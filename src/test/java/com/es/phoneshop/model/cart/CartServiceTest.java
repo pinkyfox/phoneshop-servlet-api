@@ -2,9 +2,7 @@ package com.es.phoneshop.model.cart;
 
 import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartService;
-import com.es.phoneshop.exceptions.CannotParseToIntException;
 import com.es.phoneshop.exceptions.NotEnoughStockException;
-import com.es.phoneshop.exceptions.ValueBelowOrEqualsZeroException;
 import com.es.phoneshop.model.product.Product;
 import org.junit.Before;
 import org.junit.Test;

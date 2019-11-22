@@ -2,10 +2,10 @@ package com.es.phoneshop.web;
 
 import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartService;
+import com.es.phoneshop.exceptions.NotEnoughStockException;
 import com.es.phoneshop.exceptions.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductService;
-import com.es.phoneshop.recentlyViewed.RecentlyViewed;
 import com.es.phoneshop.recentlyViewed.RecentlyViewedService;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,17 +37,23 @@ public class ProductDetailsPageServletTest {
     private CartService cartService;
 
     @Mock
+    private HttpSession session;
+
+    @Mock
     private RecentlyViewedService recentlyViewedService;
 
     @Mock
     private RequestDispatcher requestDispatcher;
 
     @Mock
-    private Product product;
+    private Product productMock;
 
     private String id = "1";
     private String uri = "/product/" + id;
-    private Product productObj = new Product();
+    private String error = "error";
+    private String cartAttribute = "cart";
+    private int stock = 1;
+    private Product product = new Product();
     private Cart cart = new Cart();
     private List<Product> products = Collections.singletonList(new Product());
     private ProductDetailsPageServlet servlet = new ProductDetailsPageServlet();
@@ -56,17 +62,20 @@ public class ProductDetailsPageServletTest {
     public void setup() {
         servlet.setProductService(productService);
         servlet.setRecentlyViewedService(recentlyViewedService);
+        servlet.setCartService(cartService);
         when(request.getRequestURI()).thenReturn(uri);
+        when(request.getSession()).thenReturn(session);
     }
 
     @Test
     public void productFoundWhenTestDoGet() throws ServletException, IOException, ProductNotFoundException {
-        when(productService.getProduct(id)).thenReturn(productObj);
+        when(productService.getProduct(id)).thenReturn(product);
         when(request.getRequestDispatcher("/WEB-INF/pages/product.jsp")).thenReturn(requestDispatcher);
+        when(recentlyViewedService.processRequest(request, product)).thenReturn(products);
 
         servlet.doGet(request, response);
 
-        verify(request).setAttribute("product", productObj);
+        verify(request).setAttribute("product", product);
         verify(requestDispatcher).forward(request, response);
     }
 
@@ -74,10 +83,32 @@ public class ProductDetailsPageServletTest {
     public void productNotFoundWhenTestDoGet() throws IOException, ServletException, ProductNotFoundException {
         when(productService.getProduct(id)).thenThrow(ProductNotFoundException.class);
         when(request.getRequestDispatcher("/WEB-INF/pages/productNotFound.jsp")).thenReturn(requestDispatcher);
+        when(recentlyViewedService.processRequest(request, product)).thenReturn(products);
 
         servlet.doGet(request, response);
 
-        verify(request, never()).setAttribute("product", productObj);
+        verify(request, never()).setAttribute("product", product);
+        verify(requestDispatcher).forward(request, response);
+    }
+
+    @Test
+    public void productAddedToCartWhenDoPost() throws ProductNotFoundException {
+        when(productService.getProduct(uri)).thenReturn(product);
+        when(cartService.processRequest(request, product)).thenReturn(cart);
+
+        servlet.doPost(request, response);
+
+        verify(response).sendRedirect(uri + "?success=true");
+    }
+
+    @Test
+    public void getProductNotFoundExceptionWhenDoPost() throws ProductNotFoundException, ValueBelowOrEqualsZeroException, CannotParseToIntException, NotEnoughStockException, IOException, ServletException {
+        when(productService.getProduct(id)).thenThrow(ProductNotFoundException.class);
+        when(cartService.processRequest(request, product)).thenReturn(cart);
+        when(request.getRequestDispatcher("/WEB-INF/pages/productNotFound.jsp")).thenReturn(requestDispatcher);
+
+        servlet.doPost(request, response);
+
         verify(requestDispatcher).forward(request, response);
     }
 }
