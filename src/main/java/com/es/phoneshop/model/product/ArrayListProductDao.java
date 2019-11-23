@@ -89,7 +89,10 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     private int getIndexOf(Product product) {
-        return arrayListProduct.indexOf(product);
+        Optional<Product> result = arrayListProduct.stream()
+                .filter(currentProduct -> product.getId().equals(currentProduct.getId()))
+                .findAny();
+        return result.isPresent() ? arrayListProduct.indexOf(result.get()) : -1;
     }
 
     private boolean isExist(Product product) {

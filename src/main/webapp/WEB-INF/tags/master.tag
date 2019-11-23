@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %>
 <%@ tag trimDirectiveWhitespaces="true" %>
 <%@ attribute name="pageTitle" required="true" %>
 
@@ -13,11 +15,30 @@
   <header>
       <a href="${pageContext.servletContext.contextPath}">
       <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
-      PhoneShop
+      PhoneShop: ${sessionScope.get("cart")}
     </a>
   </header>
   <main>
  <jsp:doBody/>
   </main>
+  <c:if test="${not empty recentlyViewed}">
+      <div>
+          <p>
+          <h2>Recently viewed products</h2>
+          </p>
+          <table>
+              <tr>
+                  <c:forEach items="${recentlyViewed.recentlyViewedList}" var="product">
+                      <td align="center">
+                          <img class="product-tile" src="https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/${product.imageUrl}">
+                          <p>
+                              <a href = "products/${product.id}">${product.description}</a>
+                          </p>
+                      </td>
+                  </c:forEach>
+              </tr>
+          </table>
+      </div>
+  </c:if>
 </body>
 </html>

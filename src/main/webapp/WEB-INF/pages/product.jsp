@@ -23,17 +23,22 @@
         </tr>
      </table>
      <div class = "stockBox">
-        <script>
-           <%@include file="/WEB-INF/ajax/createSelectForm.js"%>
-        </script>
         <c:if test = "${stock > 0}">
            <h3 style = "color : green; font-weight : bold">In Stock</h3>
-           <form name = "stockForm" method = "post">
-              <label style = "font-weight : bold; border : 1 px; border-color : black">Qty :
-                 <select id = "stockOptions" name = "stickList" style = "border : none; width : 10 px" autofocus>
-                 </select>
-              </label>
-              <input type="button" value="Add to cart" id="submit"/>
+           <form method = "post" action="${pageContext.servletContext.contextPath}/products/${product.id}">
+               <p>
+                   <c:if test="${not empty error}">
+                       <span style="color: red; font-weight: bold">${error}</span>
+                   </c:if>
+                   <c:if test="${param.success}">
+                       <span style="color: green; font-weight: bold">Product was successfully added to cart</span>
+                   </c:if>
+               </p>
+               <p>
+                  <label>Qty: </label>
+                  <input name="quantity" value="${param.quantity}"/>
+                  <button>Add to cart</button>
+               </p>
            </form>
         </c:if>
         <c:if test = "${stock <= 0}">

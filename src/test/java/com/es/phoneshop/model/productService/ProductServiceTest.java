@@ -1,6 +1,5 @@
 package com.es.phoneshop.model.productService;
 
-import com.es.phoneshop.exceptions.ProductNotFoundException;
 import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductService;
