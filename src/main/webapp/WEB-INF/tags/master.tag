@@ -15,8 +15,11 @@
   <header>
       <a href="${pageContext.servletContext.contextPath}">
       <img src="${pageContext.servletContext.contextPath}/images/logo.svg"/>
-      PhoneShop: ${sessionScope.get("cart")}
-    </a>
+      PhoneShop
+      </a>
+      <form action="${pageContext.servletContext.contextPath}/cart">
+          <input type="submit" value="Total Price: ${cart.totalPrice} | Items: ${cart.cartSize}"/>
+      </form>
   </header>
   <main>
  <jsp:doBody/>
