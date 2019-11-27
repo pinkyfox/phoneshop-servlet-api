@@ -58,6 +58,6 @@
   </listener>
 
   <listener>
-    <listener-class>com.es.phoneshop.Listeners.SetUserCartSessionListener</listener-class>
+    <listener-class>com.es.phoneshop.Listeners.UserSessionListener</listener-class>
   </listener>
 </web-app>

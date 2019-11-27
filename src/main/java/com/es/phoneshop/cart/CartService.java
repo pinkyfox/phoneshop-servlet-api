@@ -11,10 +11,6 @@ import javax.servlet.http.HttpSession;
 public class CartService {
     private static CartService cartService;
 
-    private final static String NOT_ENOUGH_STOCK = "Not enough stock. Available : ";
-    private final static String NOT_A_NUMBER = "Invalid input. Not a number : ";
-    private final static String INVALID_QUANTITY = "Invalid input. You're entered invalid quantity : ";
-
     private CartService() {
     }
 
@@ -25,7 +21,7 @@ public class CartService {
         return cartService;
     }
 
-    public Cart processRequest(HttpSession session, Product product, int quantity) throws NotEnoughStockException {
+    public Cart addProductToUserSessionCart(HttpSession session, Product product, int quantity) throws NotEnoughStockException {
         Cart cart = (Cart) session.getAttribute("cart");
         if (cart == null) {
             cart = new Cart();
@@ -58,12 +54,12 @@ public class CartService {
         try {
             Integer value = Integer.valueOf(quantity);
             if (value <= 0) {
-                throw new InvalidQuantityException(INVALID_QUANTITY + quantity);
+                throw new InvalidQuantityException();
             } else if (value > maxQuantity) {
-                throw new NotEnoughStockException(NOT_ENOUGH_STOCK + maxQuantity);
+                throw new NotEnoughStockException(String.valueOf(maxQuantity));
             }
         } catch (NumberFormatException e) {
-            throw new NotANumberException(NOT_A_NUMBER + quantity);
+            throw new NotANumberException();
         }
     }
 

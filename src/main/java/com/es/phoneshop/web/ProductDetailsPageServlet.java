@@ -58,7 +58,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
         if (errorMap.isEmpty()) {
             try {
                 product = productService.getProduct(getId(request));
-                cart = cartService.processRequest(request.getSession(), product, Integer.valueOf(request.getParameter("quantity")));
+                cart = cartService.addProductToUserSessionCart(request.getSession(), product, Integer.valueOf(request.getParameter("quantity")));
                 request.getSession().setAttribute("cart", cart);
             } catch (ProductNotFoundException e) {
                 request.getRequestDispatcher("/WEB-INF/pages/productNotFound.jsp").forward(request, response);

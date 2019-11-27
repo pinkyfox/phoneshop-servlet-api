@@ -23,6 +23,9 @@ public class CartPageServlet extends HttpServlet {
 
     private CartService cartService;
     private final static String VALID = "valid";
+    private final static String NOT_ENOUGH_STOCK = "Not enough stock. Available : ";
+    private final static String NOT_A_NUMBER = "Invalid input. Not a number : ";
+    private final static String INVALID_QUANTITY = "Invalid input. You're entered invalid quantity : ";
 
     @Override
     public void init() {
@@ -46,13 +49,13 @@ public class CartPageServlet extends HttpServlet {
                 cartService.updateCartItem(session, productId, newQuantity);
                 updateInfoMap.put(productId, VALID);
             } catch (CartItemNotFoundException e) {
-                continue;
+                //NOP
             } catch (NotEnoughStockException e) {
-                updateInfoMap.put(productId, e.getMessage());
+                updateInfoMap.put(productId, NOT_ENOUGH_STOCK + e.getMessage());
             } catch (NotANumberException e) {
-                updateInfoMap.put(productId, e.getMessage());
+                updateInfoMap.put(productId, NOT_A_NUMBER + newQuantity);
             } catch (InvalidQuantityException e) {
-                updateInfoMap.put(productId, e.getMessage());
+                updateInfoMap.put(productId, INVALID_QUANTITY + newQuantity);
             }
         }
         request.setAttribute("updateInfo", updateInfoMap);

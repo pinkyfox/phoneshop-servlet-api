@@ -21,6 +21,23 @@ public class Cart implements Serializable {
         }
     }
 
+    private boolean isExist(CartItem cartItem) {
+        Optional<CartItem> isExist = cartItemList.stream()
+                .filter(currentCartItem -> currentCartItem.equals(cartItem))
+                .findAny();
+        return isExist.isPresent();
+    }
+
+    private void mergeCartItem(CartItem cartItem, int quantity) {
+        if (quantity > 0) {
+            CartItem previousValue = cartItemList.get(cartItemList.indexOf(cartItem));
+            int newQuantity = previousValue.getQuantity() + quantity;
+            previousValue.setQuantity(newQuantity);
+        } else {
+            delete(cartItem);
+        }
+    }
+
     public void delete(CartItem cartItem) {
         cartItemList.removeIf(c -> cartItem.equals(c));
     }
@@ -60,22 +77,5 @@ public class Cart implements Serializable {
             totalPrice = totalPrice.add(price.multiply(quantity));
         }
         return totalPrice;
-    }
-
-    private boolean isExist(CartItem cartItem) {
-        Optional<CartItem> isExist = cartItemList.stream()
-                .filter(currentCartItem -> currentCartItem.equals(cartItem))
-                .findAny();
-        return isExist.isPresent();
-    }
-
-    private void mergeCartItem(CartItem cartItem, int quantity) {
-        if (quantity > 0) {
-            CartItem previousValue = cartItemList.get(cartItemList.indexOf(cartItem));
-            int newQuantity = previousValue.getQuantity() + quantity;
-            previousValue.setQuantity(newQuantity);
-        } else {
-            delete(cartItem);
-        }
     }
 }
