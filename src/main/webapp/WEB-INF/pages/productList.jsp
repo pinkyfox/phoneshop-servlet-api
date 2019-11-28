@@ -15,7 +15,7 @@
      </span>
      <span>
         <input type="button" value="Search" id="myButton"/>
-     <span>
+     </span>
   </div>
   <table id = "productTable">
      <thead>

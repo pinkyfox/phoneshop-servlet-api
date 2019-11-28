@@ -1,10 +1,9 @@
-<%@page language="java" contentType="text/html; charset=UTF-8" %>
+<%@page  contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 
 <jsp:useBean id="product" type="com.es.phoneshop.model.product.Product" scope="request"/>
-<c:set var = "stock" value = "${product.stock}" scope = "request"/>
 <tags:master pageTitle="Product details">
   <p>${product.description}</p>
   <body>
@@ -23,7 +22,10 @@
         </tr>
      </table>
      <div class = "stockBox">
-        <c:if test = "${stock > 0}">
+        <c:if test = "${isOutOfStockForUser == true}">
+            <h3 style = "color : red; font-weight : bold">Out of Stock</h3>
+        </c:if>
+        <c:if test = "${isOutOfStockForUser == false}">
            <h3 style = "color : green; font-weight : bold">In Stock</h3>
            <form method = "post" action="${pageContext.servletContext.contextPath}/products/${product.id}">
                <p>
@@ -40,9 +42,6 @@
                   <button>Add to cart</button>
                </p>
            </form>
-        </c:if>
-        <c:if test = "${stock <= 0}">
-           <h3 style = "color : red; font-weight : bold">Out of Stock</h3>
         </c:if>
      </div>
   </body>

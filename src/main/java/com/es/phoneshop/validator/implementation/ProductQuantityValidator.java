@@ -12,7 +12,6 @@ public class ProductQuantityValidator implements Validator {
     private static final String VALUE_BELOW_OR_EQUALS_ZERO = "Invalid input. You're entered invalid quantity.";
     private static final String CANNOT_PARSE_TO_INT = "Invalid input. Not a number.";
 
-
     @Override
     public Map validate(HttpServletRequest request, Map errorMap) {
         String quantity = request.getParameter(ERROR_FIELD);

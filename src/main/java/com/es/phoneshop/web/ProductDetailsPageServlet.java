@@ -33,10 +33,11 @@ public class ProductDetailsPageServlet extends HttpServlet {
     }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
             Product product = productService.getProduct(getId(request));
             request.setAttribute("product", product);
+            request.setAttribute("isOutOfStockForUser", productService.isOutOfStockForUser(request, product));
             request.getSession().setAttribute("recentlyViewed", recentlyViewedService.processRequest(request, product));
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
         } catch (Exception e) {
@@ -45,7 +46,7 @@ public class ProductDetailsPageServlet extends HttpServlet {
     }
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Map<String, List<String>> errorMap = new HashMap<>();
 
         Validator<String, String> validator = new ProductQuantityValidator();
@@ -57,12 +58,12 @@ public class ProductDetailsPageServlet extends HttpServlet {
         if (errorMap.isEmpty()) {
             try {
                 product = productService.getProduct(getId(request));
-                cart = cartService.processRequest(request.getSession(), product, Integer.valueOf(request.getParameter("quantity")));
+                cart = cartService.addProductToUserSessionCart(request.getSession(), product, Integer.valueOf(request.getParameter("quantity")));
                 request.getSession().setAttribute("cart", cart);
             } catch (ProductNotFoundException e) {
                 request.getRequestDispatcher("/WEB-INF/pages/productNotFound.jsp").forward(request, response);
             } catch (NotEnoughStockException e) {
-                validator.addErrorMessage(errorMap, "Out of stock. Available : " + product.getStock());
+                validator.addErrorMessage(errorMap, "Out of stock. Available : " + e.getMessage());
             }
         }
 

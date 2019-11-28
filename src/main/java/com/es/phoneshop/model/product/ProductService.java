@@ -1,7 +1,11 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.cart.Cart;
+import com.es.phoneshop.cart.CartItem;
+import com.es.phoneshop.exceptions.CartItemNotFoundException;
 import com.es.phoneshop.exceptions.ProductNotFoundException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public class ProductService {
@@ -42,6 +46,16 @@ public class ProductService {
                     getProductsByDescriptionAndSortedByDescription(query, isAscOrder);
         }
         return result;
+    }
+
+    public boolean isOutOfStockForUser(HttpServletRequest request, Product product) {
+        Cart cart = (Cart) request.getSession().getAttribute("cart");
+        CartItem cartItem = cart.findCartItem(product.getId()).orElse(null);
+        if (cartItem != null) {
+            return product.getStock() - cartItem.getQuantity() <= 0 ?
+                    true : false;
+        }
+        return false;
     }
 
     public static void setProductDao(ProductDao productDao) {
