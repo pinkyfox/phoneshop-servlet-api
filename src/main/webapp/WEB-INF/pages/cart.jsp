@@ -62,7 +62,10 @@
                 </tr>
             </c:forEach>
         </table>
-        <button id="js-submitButton" style="align-self: center">Update cart</button>
+        <button id="js-submitButton" style="display: inline; align-self: center">Update cart</button>
+        <form method="get" action="/phoneshop-servlet-api/checkout" style="display: inline">
+            <input type="submit" value="Checkout"/>
+        </form>
         <label style="text-align: center; font-weight: bold">
             <h2>
                 Total price :
