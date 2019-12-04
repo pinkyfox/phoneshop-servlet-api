@@ -7,6 +7,8 @@ import com.es.phoneshop.exceptions.ProductNotFoundException;
 import com.es.phoneshop.model.product.Product;
 import com.es.phoneshop.model.product.ProductService;
 import com.es.phoneshop.recentlyViewed.RecentlyViewedService;
+import com.es.phoneshop.review.Review;
+import com.es.phoneshop.review.ReviewService;
 import com.es.phoneshop.validator.Validator;
 import com.es.phoneshop.validator.implementation.ProductQuantityValidator;
 
@@ -15,6 +17,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +26,12 @@ public class ProductDetailsPageServlet extends HttpServlet {
     private ProductService productService;
     private CartService cartService;
     private RecentlyViewedService recentlyViewedService;
+    private ReviewService reviewService;
 
 
     @Override
     public void init() {
+        reviewService = ReviewService.getInstance();
         productService = ProductService.getInstance();
         cartService = CartService.getInstance();
         recentlyViewedService = RecentlyViewedService.getInstance();
@@ -37,6 +42,10 @@ public class ProductDetailsPageServlet extends HttpServlet {
         try {
             Product product = productService.getProduct(getId(request));
             request.setAttribute("product", product);
+            if (request.getParameter("username") != null) {
+                reviewService.placeReview(product, getReview(request));
+            }
+            request.setAttribute("reviews", reviewService.getReviews(product));
             request.setAttribute("isOutOfStockForUser", productService.isOutOfStockForUser(request, product));
             request.getSession().setAttribute("recentlyViewed", recentlyViewedService.processRequest(request, product));
             request.getRequestDispatcher("/WEB-INF/pages/product.jsp").forward(request, response);
@@ -91,5 +100,12 @@ public class ProductDetailsPageServlet extends HttpServlet {
 
     private String getId(HttpServletRequest request) {
         return request.getRequestURI().substring(request.getRequestURI().lastIndexOf("/") + 1);
+    }
+
+    private Review getReview(HttpServletRequest request) {
+        String username = request.getParameter("username");
+        String comment = request.getParameter("comment");
+        Integer stars = Integer.valueOf(request.getParameter("star"));
+        return new Review(username, stars, comment);
     }
 }
