@@ -1,5 +1,9 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.review.Review;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Currency;
@@ -12,6 +16,7 @@ public class Product implements Serializable {
     private Currency currency;
     private int stock;
     private String imageUrl;
+    private List<Review> review = new ArrayList<>();
 
     public Product() {
     }
@@ -79,6 +84,14 @@ public class Product implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public List<Review> getReview() {
+        return review;
+    }
+
+    public void setReview(Review review) {
+        this.review.add(review);
     }
 
     @Override

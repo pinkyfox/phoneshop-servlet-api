@@ -72,7 +72,17 @@
       <max-age>1500</max-age>
     </cookie-config>
   </session-config>
-  
+
+  <filter>
+    <filter-name>welcome</filter-name>
+    <filter-class>com.es.phoneshop.welcomFilter.WelcomeFilter</filter-class>
+  </filter>
+
+  <filter-mapping>
+    <filter-name>welcome</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+
   <listener>
     <listener-class>com.es.phoneshop.Listeners.SingletonInstantiateServletContextListener</listener-class>
   </listener>
