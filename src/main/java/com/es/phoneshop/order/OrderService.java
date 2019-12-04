@@ -22,18 +22,20 @@ public class OrderService {
 		return instance;
 	}
 
-	public void placeOrder(Order order) {
+	public boolean placeOrder(Order order) {
 		order.getOrderItems().stream()
 				.forEach(cartItem -> {
 					try {
 						String productId = cartItem.getProduct().getId();
 						Product product = productService.getProduct(productId);
-						product.setStock(product.getStock() - cartItem.getQuantity());
+						int newStock = product.getStock() - cartItem.getQuantity();
+						product.setStock(newStock);
 					} catch (ProductNotFoundException e) {
 						e.printStackTrace();
 					}
 				});
 		orderDao.save(order);
+		return true;
 	}
 
 	public Order getOrder(String orderId) throws OrderNotFoundException {

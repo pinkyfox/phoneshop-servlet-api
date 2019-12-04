@@ -2,6 +2,7 @@ package com.es.phoneshop.order;
 
 import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartItem;
+import com.es.phoneshop.model.product.Product;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -30,6 +31,14 @@ public class Order implements Serializable {
 	public Order(Cart cart) {
 		ArrayList<CartItem> source = (ArrayList<CartItem>) cart.getCartItemList();
 		this.orderItems = (List<CartItem>) source.clone();
+		this.orderItems.stream()
+				.forEach(cartItem -> {
+					Product product = cartItem.getProduct();
+					int newStock = product.getStock() - cartItem.getQuantity();
+					if (newStock < 0) {
+						cartItem.setQuantity(product.getStock());
+					}
+				});
 		this.subtotal = cart.getTotalPrice();
 	}
 

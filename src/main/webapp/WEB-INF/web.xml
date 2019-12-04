@@ -74,7 +74,7 @@
   </session-config>
   
   <listener>
-    <listener-class>com.es.phoneshop.Listeners.ProductSampleDataServletContextListener</listener-class>
+    <listener-class>com.es.phoneshop.Listeners.SingletonInstantiateServletContextListener</listener-class>
   </listener>
 
   <listener>
