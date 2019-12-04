@@ -49,7 +49,6 @@ public class CartPageServlet extends HttpServlet {
                 cartService.updateCartItem(session, productId, newQuantity);
                 updateInfoMap.put(productId, VALID);
             } catch (CartItemNotFoundException e) {
-                //NOP
             } catch (NotEnoughStockException e) {
                 updateInfoMap.put(productId, NOT_ENOUGH_STOCK + e.getMessage());
             } catch (NotANumberException e) {

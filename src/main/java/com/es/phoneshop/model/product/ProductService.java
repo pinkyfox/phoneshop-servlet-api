@@ -2,7 +2,6 @@ package com.es.phoneshop.model.product;
 
 import com.es.phoneshop.cart.Cart;
 import com.es.phoneshop.cart.CartItem;
-import com.es.phoneshop.exceptions.CartItemNotFoundException;
 import com.es.phoneshop.exceptions.ProductNotFoundException;
 
 import javax.servlet.http.HttpServletRequest;

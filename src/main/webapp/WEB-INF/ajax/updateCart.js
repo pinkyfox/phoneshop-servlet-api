@@ -1,5 +1,8 @@
 let productsHash = new Map();
-$(document).on("click", "#js-submitButton", function updateCart() {
+$(document).on("click", "#js-submitButton", updateCart);
+
+
+function updateCart() {
     let productsQntity = document.getElementsByClassName('quantity');
     let productsId = document.getElementsByClassName('productId');
     [...productsId].forEach((id, i) => {
@@ -12,8 +15,9 @@ $(document).on("click", "#js-submitButton", function updateCart() {
         },
         body: 'cartUpdateValues=' + JSON.stringify([...productsHash])
     }).then(function(response) {
-            response.text().then(function(text) {
-                $("html").html(text);
-            });
+        response.text().then(function(text) {
+            $("html").html(text);
+        });
     });
-});
+}
+

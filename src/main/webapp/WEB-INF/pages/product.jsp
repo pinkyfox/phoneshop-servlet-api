@@ -44,5 +44,49 @@
            </form>
         </c:if>
      </div>
+     <c:if test="${product.review.size() != 0}">
+         <p>
+         <table>
+             <tr>
+                 <td style="text-align: center">
+                     <b>Username:</b>
+                 </td>
+                 <td style="text-align: center">
+                     <b>Review:</b>
+                 </td>
+                 <td style="text-align: center">
+                     <b>Mark (maximum 5):</b>
+                 </td>
+             </tr>
+             <c:forEach var="review" items="${product.review}">
+                 <tr>
+                     <td>
+                         <b>${review.username}</b>
+                     </td>
+                     <td>
+                         <i>${review.comment}</i>
+                     </td>
+                     <td>
+                         <i><b>${review.stars}</b></i>
+                     </td>
+                 </tr>
+             </c:forEach>
+         </table>
+         </p>
+     </c:if>
+     <p>Leave comment!</p>
+     <form method="get">
+         <label style="display: inline">Name</label>
+         <input name="username" type="text" required style="display: inline"/>
+         <br/><label style="display: inline">Comment</label>
+         <textarea cols="50" rows="5" name="comment" placeholder="Write your comment!" style="display: inline" required></textarea>
+         <br/><label style="display: inline">Mark</label>
+         <select name="star">
+             <c:forEach var="num" begin="1" end="5" step="1">
+                 <option value="${num}">${num}</option>
+             </c:forEach>
+         </select>
+         <br/><input type="submit" value="Place Review"/>
+     </form>
   </body>
 </tags:master>
